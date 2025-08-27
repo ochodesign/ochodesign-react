@@ -1,0 +1,28 @@
+@keyframes accentShine {
+    0% {
+        background-position: -120px;
+    }
+    100% {
+        background-position: 120px;
+    }
+}
+:root {
+        --primary-color: #0f1419;
+        --secondary-color: #00ffff;
+        --accent-color: #ff0080;
+        --text-primary: #ffffff;
+        --text-secondary: #cccccc;
+        --text-light: #999999;
+        --white: #ffffff;
+        --bg-light: #1a2332;
+        --bg-gray: #243447;
+        --bg-dark: #0f1419;
+        --bg-blue-dark: #162033;
+        --bg-blue-light: #1e2a3d;
+}
+
+@keyframes heroBgMove {
+    0% { background-position: center 0px; }
+    50% { background-position: center 40px; }
+    100% { background-position: center 0px; }
+}
