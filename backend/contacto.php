@@ -1,5 +1,11 @@
 <?php
 // Permitir peticiones desde cualquier origen (CORS)
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    header('Access-Control-Allow-Origin: *');
+    header('Access-Control-Allow-Headers: Content-Type');
+    header('Access-Control-Allow-Methods: POST, OPTIONS');
+    exit(0);
+}
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Headers: Content-Type');
 header('Content-Type: application/json');
@@ -31,8 +37,12 @@ if ($conn->connect_error) {
     exit;
 }
 
-$stmt = $conn->prepare('INSERT INTO contacto (nombre, email, wsp, motivo, mensaje) VALUES (?, ?, ?, ?, ?)');
-$stmt->bind_param('sssss', $nombre, $email, $wsp, $motivo, $mensaje);
+
+$tz = 'America/Argentina/Buenos_Aires';
+date_default_timezone_set($tz);
+$fecha = date('Y-m-d H:i:s');
+$stmt = $conn->prepare('INSERT INTO contacto (nombre, email, wsp, motivo, mensaje, fecha) VALUES (?, ?, ?, ?, ?, ?)');
+$stmt->bind_param('ssssss', $nombre, $email, $wsp, $motivo, $mensaje, $fecha);
 
 if ($stmt->execute()) {
     echo json_encode(['success' => true]);

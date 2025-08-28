@@ -29,15 +29,13 @@ function ProcesoTrabajo() {
   return (
     <section className="w-full py-12 px-4 bg-gradient-to-br from-[#18181b] via-[#23232a] to-[#0d0d0d]">
       <div className="max-w-5xl mx-auto">
-        <h2 className="text-2xl md:text-3xl font-bold text-white mb-10 text-center font-sans tracking-tight">Nuestro Proceso de Trabajo</h2>
+        <h2 className="text-2xl md:text-3xl font-bold text-white mb-4 text-center font-sans tracking-tight">Nuestro Proceso de Trabajo</h2>
+        <p className="text-gray-300 text-lg text-center mb-10 max-w-3xl mx-auto">Acompañamos cada etapa de tu proyecto, desde la idea inicial hasta el lanzamiento y crecimiento. Nuestro proceso es claro, personalizado y enfocado en lograr resultados reales para tu negocio.</p>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
           {pasos.map((paso, idx) => (
-            <a
+            <div
               key={idx}
-              href="https://www.ochodesginweb.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="rounded-3xl shadow-2xl p-0 flex flex-col items-center text-center transition-transform duration-300 hover:scale-105 relative cursor-pointer no-underline"
+              className="rounded-3xl shadow-2xl p-0 flex flex-col items-center text-center transition-transform duration-300 relative cursor-pointer no-underline hover:scale-105 hover:shadow-cyan-500/40 hover:shadow-2xl"
               data-aos="fade-up"
             >
               <div className="w-full">
@@ -50,10 +48,10 @@ function ProcesoTrabajo() {
                 />
               </div>
               <div className="w-full bg-[#243447] flex flex-col items-center justify-center py-8 px-4 rounded-b-2xl">
-                <h3 className="text-3xl font-bold text-white mb-3 tracking-tight text-center">{paso.title}</h3>
+                <h3 className="text-3xl font-bold mb-3 tracking-tight text-center" style={{ color: 'var(--secondary-color)' }}>{paso.title}</h3>
                 <p className="text-gray-300 text-lg font-medium text-center">{paso.desc}<br /></p>
               </div>
-            </a>
+            </div>
           ))}
         </div>
       </div>

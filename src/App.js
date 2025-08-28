@@ -36,7 +36,7 @@ function App() {
     }, []);
   return (
     <BrowserRouter>
-      <Header />
+      {window.location.pathname !== '/admin' && <Header />}
       <Routes>
         <Route path="/" element={<MainPage />} />
         <Route path="/admin" element={localStorage.getItem('adminAuth') === 'true' ? <AdminDashboard /> : <LoginAdmin />} />

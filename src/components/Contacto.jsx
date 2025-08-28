@@ -6,6 +6,7 @@ import * as Yup from 'yup';
 import MenuItem from '@mui/material/MenuItem';
 
 import { Box, Container, Typography, TextField, Button, InputAdornment, FormControlLabel, Checkbox } from '@mui/material';
+import Select from '@mui/material/Select';
 import PersonIcon from '@mui/icons-material/Person';
 import EmailIcon from '@mui/icons-material/Email';
 import WhatsAppIcon from '@mui/icons-material/WhatsApp';
@@ -35,6 +36,16 @@ const validationSchema = Yup.object({
 
 const Contacto = () => {
   const [msgEnviado, setMsgEnviado] = useState("");
+  const [openMotivo, setOpenMotivo] = useState(false);
+
+  // Cierra el dropdown de motivo al hacer scroll en la ventana
+  React.useEffect(() => {
+    const handleScroll = () => {
+      setOpenMotivo(false);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
   // Formatea el número de WhatsApp al formato internacional argentino
   const formatWsp = (wsp) => {
     if (!wsp) return '';
@@ -46,7 +57,7 @@ const Contacto = () => {
     return num;
   };
   return (
-  <Box id="contacto" data-aos="fade-up" sx={{ width: '100%', minHeight: '100vh', py: 8, background: 'linear-gradient(180deg, #101a2b 80%, #162033 100%)', boxShadow: '0 0 80px 0 #00ffff22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+  <Box id="contacto" sx={{ width: '100%', minHeight: '100vh', py: 8, background: 'linear-gradient(180deg, #101a2b 80%, #162033 100%)', boxShadow: '0 0 80px 0 #00ffff22', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
       <Container maxWidth="sm" sx={{ bgcolor: 'rgba(16,26,43,0.98)', borderRadius: 4, boxShadow: '0 0 24px 0 #00ffff55, 0 2px 8px #000a', p: { xs: 2, md: 4 }, border: '2px solid #00ffff55', color: 'var(--text-primary)' }}>
         <Typography variant="h2" align="center" sx={{ color: '#00ffff', fontWeight: 700, mb: 2, fontSize: { xs: 28, md: 36 } }}>
           ¡Conectá con nosotros!
@@ -59,7 +70,7 @@ const Contacto = () => {
           validationSchema={validationSchema}
           onSubmit={async (values, { resetForm, setSubmitting }) => {
             try {
-              await axios.post('https://darkred-mosquito-698008.hostingersite.com/backend/contacto.php', {
+              await axios.post('https://ochodesignweb.com/backend/contacto.php', {
                 nombre: values.nombre,
                 email: values.email,
                 wsp: formatWsp(values.wsp),
@@ -140,48 +151,61 @@ const Contacto = () => {
                 }}
                 sx={{ '& label': { color: '#00ffff' }, '& .MuiOutlinedInput-root': { bgcolor: 'rgba(16,26,43,0.98)', color: 'var(--white)', '& fieldset': { borderColor: '#00ffff55' }, '&:hover fieldset': { borderColor: '#00ffff' }, '&.Mui-focused fieldset': { borderColor: '#00ffff' } } }}
               />
-              <TextField
-                select
-                fullWidth
-                label="Motivo"
-                name="motivo"
-                margin="normal"
-                value={values.motivo}
-                onChange={handleChange}
-                onBlur={handleBlur}
-                error={touched.motivo && Boolean(errors.motivo)}
-                helperText={touched.motivo && errors.motivo}
-                sx={{
-                  '& label': { color: '#00ffff' },
-                  '& .MuiOutlinedInput-root': {
-                    bgcolor: 'rgba(16,26,43,0.98)',
+              {/* Dropdown Motivo desde cero con MUI Select */}
+              <Box sx={{ mt: 1, mb: 0, p: 0 }}>
+                <Typography sx={{ color: '#00ffff', fontWeight: 600, mb: 1, fontSize: 18 }}>Motivo</Typography>
+                <Select
+                  fullWidth
+                  displayEmpty
+                  name="motivo"
+                  value={values.motivo}
+                  onChange={handleChange}
+                  onBlur={handleBlur}
+                  error={touched.motivo && Boolean(errors.motivo)}
+                  sx={{
+                    bgcolor: 'rgba(16,26,43,0.99)',
                     color: 'var(--white)',
-                    '& fieldset': { borderColor: '#00ffff55' },
-                    '&:hover fieldset': { borderColor: '#00ffff' },
-                    '&.Mui-focused fieldset': { borderColor: '#00ffff' }
-                  },
-                  '& .MuiSelect-icon': {
-                    color: '#00ffff',
-                  },
-                  '& .MuiSelect-select': {
-                    bgcolor: 'rgba(16,26,43,0.98)',
-                    color: 'var(--white)',
-                  },
-                  '& .MuiMenu-paper': {
-                    bgcolor: 'rgba(16,26,43,0.98)',
-                    color: 'var(--white)',
-                  },
-                }}
-              >
-                {motivos.map((option) => (
-                  <MenuItem key={option.value} value={option.value}>
-                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                      {option.icon}
-                      <Typography sx={{ ml: 1 }}>{option.label}</Typography>
-                    </Box>
+                    border: '2px solid var(--secondary-color)',
+                    boxShadow: '0 4px 24px #00ffff44',
+                    borderRadius: '12px',
+                    '& .MuiSelect-icon': { color: '#00ffff' },
+                  }}
+                  MenuProps={{
+                    anchorOrigin: { vertical: 'bottom', horizontal: 'left' },
+                    transformOrigin: { vertical: 'top', horizontal: 'left' },
+                    disablePortal: true,
+                    open: openMotivo,
+                    onClose: () => setOpenMotivo(false),
+                  }}
+                  onOpen={() => setOpenMotivo(true)}
+                  onClose={() => setOpenMotivo(false)}
+                  renderValue={selected => {
+                    if (!selected) return <span style={{ color: '#999' }}>Selecciona un motivo</span>;
+                    const motivo = motivos.find(m => m.value === selected);
+                    return (
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        {motivo?.icon}
+                        <span style={{ marginLeft: 8 }}>{motivo?.label}</span>
+                      </Box>
+                    );
+                  }}
+                >
+                  <MenuItem value="">
+                    <span style={{ color: '#999' }}>Selecciona un motivo</span>
                   </MenuItem>
-                ))}
-              </TextField>
+                  {motivos.map(option => (
+                    <MenuItem key={option.value} value={option.value}>
+                      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        {option.icon}
+                        <span style={{ marginLeft: 8 }}>{option.label}</span>
+                      </Box>
+                    </MenuItem>
+                  ))}
+                </Select>
+                {touched.motivo && errors.motivo && (
+                  <Typography sx={{ color: '#ff0080', fontSize: 14, mt: 1 }}>{errors.motivo}</Typography>
+                )}
+              </Box>
               <TextField
                 fullWidth
                 label="Mensaje"

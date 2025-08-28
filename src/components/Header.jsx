@@ -22,14 +22,25 @@ const Header = () => {
     { label: 'Proyectos', href: '#proyectos' },
     { label: 'Contacto', href: '#contacto' },
   ];
+
+  // Función para scroll suave
+  const handleNavClick = (e, href) => {
+    if (href.startsWith('#')) {
+      e.preventDefault();
+      const el = document.querySelector(href);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+    }
+  };
   return (
     <Slide direction="down" in={true} mountOnEnter unmountOnExit appear={false}>
       <AppBar position="fixed" sx={{ bgcolor: 'var(--primary-color)', transition: 'top 0.3s', zIndex: 1201, height: 90 }} elevation={4}>
-        <Toolbar sx={{ minHeight: 90 }}>
+  <Toolbar sx={{ minHeight: 90, justifyContent: { xs: 'space-between', md: 'space-evenly' }, alignItems: 'center', paddingTop: '6px' }}>
           {/* Mobile: logo izquierda, burger derecha */}
           <Box sx={{ display: { xs: 'flex', md: 'none' }, alignItems: 'center', width: '100%', justifyContent: 'space-between' }}>
             <a href="/" style={{ display: 'block' }}>
-              <img src={logoUrl} alt="Logo" style={{ height: 56, width: 56, borderRadius: '50%', marginLeft: 8, boxShadow: '0 0 16px #00ffff88', display: 'block', alignSelf: 'center' }} />
+              <img src={logoUrl} alt="Logo" style={{ height: 56, width: 56, borderRadius: '50%', marginLeft: 8, boxShadow: '0 0 16px #00ffff88', display: 'block' }} />
             </a>
             <IconButton
               sx={{ color: 'var(--secondary-color)', mr: 2 }}
@@ -72,7 +83,10 @@ const Header = () => {
                         fontSize: 18,
                       }}
                       href={item.href}
-                      onClick={() => setDrawerOpen(false)}
+                      onClick={e => {
+                        handleNavClick(e, item.href);
+                        setDrawerOpen(false);
+                      }}
                     >
                       {item.label}
                     </Button>
@@ -89,13 +103,13 @@ const Header = () => {
               </Box>
             </Drawer>
           </Box>
-          {/* Desktop: logo centrado y menú */}
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center', justifyContent: 'center', flexGrow: 1, height: '100%', minHeight: 90 }}>
+          {/* Desktop: logo izquierda, menú derecha */}
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, alignItems: 'center' }}>
             <a href="/" style={{ display: 'block' }}>
-              <img src={logoUrl} alt="Logo" style={{ height: 72, width: 72, borderRadius: '50%', marginRight: 0, boxShadow: '0 0 16px #00ffff88', display: 'block', alignSelf: 'center' }} />
+                <img src={logoUrl} alt="Logo" style={{ height: 72, width: 72, borderRadius: '50%', marginRight: 16, boxShadow: '0 0 16px #00ffff88', display: 'block' }} />
             </a>
           </Box>
-          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1 }}>
+          <Box sx={{ display: { xs: 'none', md: 'flex' }, gap: 1, alignItems: 'center' }}>
             {menuItems.map(item => (
               <a
                 key={item.label}
@@ -112,6 +126,7 @@ const Header = () => {
                   display: 'inline-block',
                   margin: '0 2px',
                 }}
+                onClick={e => handleNavClick(e, item.href)}
                 onMouseOver={e => {
                   e.currentTarget.style.color = '#00ffff';
                   e.currentTarget.style.background = '#101a2b';
